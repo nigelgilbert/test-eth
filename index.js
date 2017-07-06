@@ -1,41 +1,36 @@
-fs = require('fs')
-Web3 = require('web3')
+fs = require('fs');
+Web3 = require('web3');
 
 web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
-//Print out what accounts are available
-//console.log(web3.eth.accounts)
+greeterABI = fs.readFileSync("greeter.sol:greeter.abi").toString();
+greeterBin = fs.readFileSync("greeter.sol:greeter.bin");
 
-//Read in the compiled smart contract
-voting_sol = fs.readFileSync('voting.json').toString()
+var Greeter = web3.eth.contract(JSON.parse(greeterABI));
 
-voting_contract = JSON.parse(voting_sol).contracts["Voting.sol:Voting"]
+function executeContract() {
+  var account = web3.eth.accounts[0];
+  var deployedContract = Greeter.new("Hello there!",
+  {data: greeterBin, from: account, gas: 3000000},
+  function(e, contract) {
+    if (e) {
+      console.log(e);
+    }else{
+      if(!contract.address) {//contract has not been mined
+        console.log("Contract transaction send: TransactionHash: " + contract.transactionHash + " waiting to be mined...");
+      }else{
+        console.log("Contract mined");
+        console.log(contract.address);
+        greeterInstance = Greeter.at(account);
+        console.log(greeterInstance.greet());
+      }
+    }
+  });
+}
 
-//This creates an object we’ll use to interact with the testrpc blockchain.
-var VotingContract = web3.eth.contract(JSON.parse(voting_contract.abi))
-
-var account = web3.eth.accounts[0];
-
-// //Create an instance of the tutorial smart contract to be used
-var deployedContract = VotingContract.new(
-	['Rama','Nick','Jose'], 
-	{data: voting_contract.bin, from: account, gas: 4700000}
-	function(e, contract) {
-		if(!e) {
-  			if(!contract.address) {//Contract has not been mined
-    			console.log("Contract transaction send: TransactionHash: " + contract.transactionHash + " waiting to be mined...");
-  			} else {
-    			console.log("Contract mined! Address: " + contract.address);
-    			//console.log(contract);
-    			console.log(contract.address);
-
-    			contractInstance = VotingContract.at(contract.address);
-
-    			console.log(contractInstance.totalVotesFor.call('Rama'))
-    			contractInstance.voteForCandidate('Rama', {from: web3.eth.accounts[0]})
-    			contractInstance.voteForCandidate('Rama', {from: web3.eth.accounts[0]})
-    			contractInstance.voteForCandidate('Rama', {from: web3.eth.accounts[0]})
-    			console.log(contractInstance.totalVotesFor.call('Rama').toLocaleString())
-  			}
-		}else { console.log(e); }
-});
+if(web3.isConnected()) {
+  console.log("Web3 connected to blockchain network");
+  executeContract();
+}else{
+  console.log("Web3 could not connect to blockchain network");
+}
