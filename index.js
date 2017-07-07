@@ -21,7 +21,7 @@ function executeContract() {
       }else{
         console.log("Contract mined");
         console.log(contract.address);
-        greeterInstance = Greeter.at(account);
+        greeterInstance = Greeter.at(contract.address);
         console.log(greeterInstance.greet());
       }
     }
