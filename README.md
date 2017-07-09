@@ -2,9 +2,10 @@ You will need to install node.js
 
 With node we can install ethereumjs-testrpc, web3, and solc
 
-Make sure you initialize project first
+If there is no package.json located in your directory make sure you initialize project first
 `npm init`
 
+Install your node modules locally
 `npm install solc ethereum-testrpc web3`
 
 Compile your solidity contracts:
