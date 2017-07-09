@@ -17,6 +17,6 @@ Compile your solidity contracts:
 This will create abi and binary files for your contracts.
 
 Start testrpc in another window to start up a test blockchain
-`./node_modules/.bin/testrpc
+`./node_modules/.bin/testrpc`
 
 Then you can run the script `node index.js`
