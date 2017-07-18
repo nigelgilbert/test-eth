@@ -6,7 +6,7 @@ If there is no package.json located in your directory make sure you initialize p
 `npm init`
 
 Install your node modules locally
-`npm install solc ethereum-testrpc web3`
+`npm install solc ethereumjs-testrpc web3`
 
 Compile your solidity contracts:
 `./node_modules/.bin/solcjs "Greeter.sol" --abi --bin`
